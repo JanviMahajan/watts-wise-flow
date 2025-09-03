@@ -7,6 +7,10 @@ import Index from "./pages/Index";
 import Analytics from "./pages/Analytics";
 import DataManagement from "./pages/DataManagement";
 import ImportData from "./pages/ImportData";
+import Stores from "./pages/Stores";
+import Locations from "./pages/Locations";
+import Alerts from "./pages/Alerts";
+import EnergyUsage from "./pages/EnergyUsage";
 import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
 
@@ -23,6 +27,10 @@ const App = () => (
           <Route path="/analytics" element={<Analytics />} />
           <Route path="/data-management" element={<DataManagement />} />
           <Route path="/import-data" element={<ImportData />} />
+          <Route path="/stores" element={<Stores />} />
+          <Route path="/locations" element={<Locations />} />
+          <Route path="/alerts" element={<Alerts />} />
+          <Route path="/energy-usage" element={<EnergyUsage />} />
           <Route path="/settings" element={<Settings />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />

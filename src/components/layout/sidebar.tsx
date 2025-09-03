@@ -63,13 +63,17 @@ export function Sidebar({ className }: SidebarProps) {
             Filters
           </h2>
           <div className="space-y-1">
-            <Button variant="ghost" className="w-full justify-start">
-              <Store className="mr-2 h-4 w-4" />
-              Stores
+            <Button variant="ghost" className="w-full justify-start" asChild>
+              <NavLink to="/stores">
+                <Store className="mr-2 h-4 w-4" />
+                Stores
+              </NavLink>
             </Button>
-            <Button variant="ghost" className="w-full justify-start">
-              <MapPin className="mr-2 h-4 w-4" />
-              Locations
+            <Button variant="ghost" className="w-full justify-start" asChild>
+              <NavLink to="/locations">
+                <MapPin className="mr-2 h-4 w-4" />
+                Locations
+              </NavLink>
             </Button>
           </div>
         </div>
@@ -81,16 +85,20 @@ export function Sidebar({ className }: SidebarProps) {
             Monitoring
           </h2>
           <div className="space-y-1">
-            <Button variant="ghost" className="w-full justify-start">
-              <AlertTriangle className="mr-2 h-4 w-4" />
-              Alerts
-              <span className="ml-auto flex h-5 w-5 items-center justify-center rounded-full bg-destructive text-xs text-destructive-foreground">
-                3
-              </span>
+            <Button variant="ghost" className="w-full justify-start" asChild>
+              <NavLink to="/alerts">
+                <AlertTriangle className="mr-2 h-4 w-4" />
+                Alerts
+                <span className="ml-auto flex h-5 w-5 items-center justify-center rounded-full bg-destructive text-xs text-destructive-foreground">
+                  3
+                </span>
+              </NavLink>
             </Button>
-            <Button variant="ghost" className="w-full justify-start">
-              <Zap className="mr-2 h-4 w-4" />
-              Energy Usage
+            <Button variant="ghost" className="w-full justify-start" asChild>
+              <NavLink to="/energy-usage">
+                <Zap className="mr-2 h-4 w-4" />
+                Energy Usage
+              </NavLink>
             </Button>
           </div>
         </div>
