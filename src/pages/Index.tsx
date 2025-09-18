@@ -6,8 +6,12 @@ import { EnergyChart } from "@/components/dashboard/energy-chart"
 import { AlertsPanel } from "@/components/dashboard/alerts-panel"
 import { Filters } from "@/components/dashboard/filters"
 import { UploadData } from "@/components/dashboard/upload-data"
+import { OptimizationTips } from "@/components/dashboard/optimization-tips"
+import { useAuth } from "@/contexts/AuthContext"
 
 const Index = () => {
+  const { user } = useAuth();
+
   return (
     <ThemeProvider defaultTheme="light" storageKey="greenops-ui-theme">
       <div className="min-h-screen bg-background">
@@ -19,9 +23,14 @@ const Index = () => {
           <main className="flex-1 p-6 space-y-6">
             {/* Page Header */}
             <div className="space-y-2">
-              <h1 className="text-3xl font-bold tracking-tight">Energy Dashboard</h1>
+              <h1 className="text-3xl font-bold tracking-tight">
+                {user?.user_type === 'house' ? 'Home Energy Dashboard' : 'Business Energy Dashboard'}
+              </h1>
               <p className="text-muted-foreground">
-                Monitor and optimize energy consumption across all locations
+                {user?.user_type === 'house' 
+                  ? 'Monitor and optimize your home energy consumption'
+                  : 'Monitor and optimize energy consumption across all locations'
+                }
               </p>
             </div>
 
@@ -35,8 +44,9 @@ const Index = () => {
                 <UploadData />
               </div>
               <div className="col-span-3 space-y-6">
-                <Filters />
+                {user?.user_type === 'shop' && <Filters />}
                 <AlertsPanel />
+                <OptimizationTips />
               </div>
             </div>
           </main>
