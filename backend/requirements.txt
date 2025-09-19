@@ -1,8 +1,10 @@
 fastapi
-uvicorn
+uvicorn[standard]
 pydantic
 sqlalchemy
 databases
 python-multipart
 pandas
 scikit-learn
+pyjwt
+bcrypt

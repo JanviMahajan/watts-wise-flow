@@ -37,52 +37,54 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const login = async (email: string, password: string): Promise<boolean> => {
     try {
-      // For demo purposes, simulate successful login
-      // TODO: Replace with actual backend authentication when endpoints are available
-      if (email && password) {
-        const mockUser = {
-          id: '1',
-          email,
-          name: email.split('@')[0],
-          user_type: 'house' as const,
-          electricity_rate: 0.12
-        };
-        const mockToken = 'demo_token_' + Date.now();
-        
-        setToken(mockToken);
-        setUser(mockUser);
-        localStorage.setItem('greenops_token', mockToken);
-        localStorage.setItem('greenops_user', JSON.stringify(mockUser));
+      const response = await fetch('http://localhost:8000/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
+      
+      const data = await response.json();
+      
+      if (response.ok && data.token) {
+        setToken(data.token);
+        setUser(data.user);
+        localStorage.setItem('greenops_token', data.token);
+        localStorage.setItem('greenops_user', JSON.stringify(data.user));
         return true;
       }
       return false;
-    } catch {
+    } catch (error) {
+      console.error('Login error:', error);
       return false;
     }
   };
 
   const register = async (email: string, password: string, name: string, userType: 'house' | 'shop'): Promise<boolean> => {
     try {
-      // For demo purposes, simulate successful registration
-      // TODO: Replace with actual backend registration when endpoints are available
-      if (email && password && name) {
-        const mockUser = {
-          id: Date.now().toString(),
-          email,
-          name,
+      const response = await fetch('http://localhost:8000/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          email, 
+          password, 
+          name, 
           user_type: userType,
           electricity_rate: 0.12
-        };
-        const mockToken = 'demo_token_' + Date.now();
-        
-        setToken(mockToken);
-        setUser(mockUser);
-        localStorage.setItem('greenops_token', mockToken);
-        localStorage.setItem('greenops_user', JSON.stringify(mockUser));
+        }),
+      });
+      
+      const data = await response.json();
+      
+      if (response.ok && data.token) {
+        setToken(data.token);
+        setUser(data.user);
+        localStorage.setItem('greenops_token', data.token);
+        localStorage.setItem('greenops_user', JSON.stringify(data.user));
         return true;
       }
       return false;
-    } catch {
+    } catch (error) {
+      console.error('Registration error:', error);
       return false;
     }
   };
