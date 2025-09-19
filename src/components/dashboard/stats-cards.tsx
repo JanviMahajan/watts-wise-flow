@@ -40,17 +40,8 @@ export function StatsCards() {
           // Calculate efficiency score (simplified)
           const efficiency = Math.max(0, 100 - Math.min((avgDaily / 50) * 100, 100));
           
-          // Fetch alerts count
-          let alertsCount = 0;
-          try {
-            const alertsResponse = await fetch('http://localhost:8000/alerts', {
-              headers: { 'Authorization': `Bearer ${token}` }
-            });
-            const alertsData = await alertsResponse.json();
-            alertsCount = alertsData.alerts ? alertsData.alerts.length : 0;
-          } catch (error) {
-            console.error('Error fetching alerts count:', error);
-          }
+          // Mock alerts count for demo
+          let alertsCount = data.length > 10 ? 2 : data.length > 5 ? 1 : 0;
           
           setStats({
             totalUsage: Math.round(totalUsage),

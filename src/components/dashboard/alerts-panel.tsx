@@ -13,6 +13,7 @@ import {
 } from "lucide-react"
 import { useEffect, useState } from "react"
 import { useAuth } from "@/contexts/AuthContext"
+import { getEnergyData } from "@/api"
 
 export function AlertsPanel() {
   const { token } = useAuth();
@@ -24,25 +25,60 @@ export function AlertsPanel() {
       if (!token) return;
       
       try {
-        const response = await fetch('http://localhost:8000/alerts', {
-          headers: { 'Authorization': `Bearer ${token}` }
-        });
-        const data = await response.json();
-        setAlerts(data.alerts || []);
-      } catch (error) {
-        console.error('Error fetching alerts:', error);
-        // Fallback to demo alerts if API fails
-        setAlerts([
-          {
-            id: 1,
-            type: "info",
-            severity: "info",
-            title: "Welcome to GreenOps!",
-            description: "Upload some energy data to see personalized alerts and insights",
-            timestamp: "Now",
-            location: "Getting Started"
+        // Check if user has uploaded data by calling energy-data endpoint
+        const energyResponse = await getEnergyData(token);
+        const hasData = energyResponse.data && energyResponse.data.length > 0;
+        
+        if (hasData) {
+          // Generate smart alerts based on data
+          const data = energyResponse.data;
+          const alerts = [];
+          
+          if (data.length > 0) {
+            const avgUsage = data.reduce((sum, entry) => sum + entry.kwh_consumed, 0) / data.length;
+            const recentUsage = data.slice(0, 3).reduce((sum, entry) => sum + entry.kwh_consumed, 0) / Math.min(3, data.length);
+            
+            if (recentUsage > avgUsage * 1.2) {
+              alerts.push({
+                id: 1,
+                type: "high_usage",
+                severity: "warning",
+                title: "Energy Usage Increasing",
+                description: `Recent usage (${recentUsage.toFixed(1)} kWh) is ${((recentUsage/avgUsage-1)*100).toFixed(0)}% above your average`,
+                timestamp: "Recent",
+                location: "Overall"
+              });
+            } else if (recentUsage < avgUsage * 0.8) {
+              alerts.push({
+                id: 2,
+                type: "efficiency",
+                severity: "info",
+                title: "Great Energy Efficiency!",
+                description: `You're using ${((1-recentUsage/avgUsage)*100).toFixed(0)}% less energy than usual. Keep it up!`,
+                timestamp: "Recent",
+                location: "Overall"
+              });
+            }
           }
-        ]);
+          
+          setAlerts(alerts);
+        } else {
+          // Welcome message for new users
+          setAlerts([
+            {
+              id: 1,
+              type: "info",
+              severity: "info",
+              title: "Welcome to GreenOps!",
+              description: "Upload some energy data to see personalized alerts and insights",
+              timestamp: "Now",
+              location: "Getting Started"
+            }
+          ]);
+        }
+      } catch (error) {
+        console.error('Error generating alerts:', error);
+        setAlerts([]);
       } finally {
         setLoading(false);
       }

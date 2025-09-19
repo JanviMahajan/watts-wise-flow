@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:8000";
+const API_URL = "https://greenops-backend-nhgv.onrender.com";
 
 // Authentication
 export async function login(email, password) {
