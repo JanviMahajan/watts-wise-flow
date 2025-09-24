@@ -1,14 +1,5 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Progress } from "@/components/ui/progress"
-import { 
-  TrendingUp, 
-  TrendingDown, 
-  Zap, 
-  DollarSign, 
-  AlertTriangle,
-  Target
-} from "lucide-react"
+import { Card, CardContent } from "@/components/ui/card"
+import { Zap, DollarSign, TrendingUp, Lightbulb } from "lucide-react"
 import { useEffect, useState } from "react"
 import { useAuth } from "@/contexts/AuthContext"
 import { getEnergyData } from "@/api"
@@ -16,11 +7,10 @@ import { getEnergyData } from "@/api"
 export function StatsCards() {
   const { token, user } = useAuth();
   const [stats, setStats] = useState({
-    totalUsage: 0,
-    avgDaily: 0,
-    estimatedCost: 0,
-    efficiency: 0,
-    alerts: 0
+    totalUsage: 7290,
+    totalCost: 1219.08,
+    nextMonthForecast: 1826.62,
+    potentialSavings: 248
   });
   const [loading, setLoading] = useState(true);
 
@@ -34,30 +24,15 @@ export function StatsCards() {
         if (response.data && response.data.length > 0) {
           const data = response.data;
           const totalUsage = data.reduce((sum, entry) => sum + entry.kwh_consumed, 0);
-          const avgDaily = totalUsage / data.length;
-          const estimatedCost = totalUsage * (user?.electricity_rate || 0.12);
-          
-          // Calculate efficiency score (simplified)
-          const efficiency = Math.max(0, 100 - Math.min((avgDaily / 50) * 100, 100));
-          
-          // Mock alerts count for demo
-          let alertsCount = data.length > 10 ? 2 : data.length > 5 ? 1 : 0;
+          const totalCost = totalUsage * (user?.electricity_rate || 0.167); // ₹0.167 per kWh
+          const nextMonthForecast = totalCost * 1.5; // 50% increase forecast
+          const potentialSavings = totalCost * 0.2; // 20% potential savings
           
           setStats({
             totalUsage: Math.round(totalUsage),
-            avgDaily: Math.round(avgDaily * 10) / 10,
-            estimatedCost: Math.round(estimatedCost * 100) / 100,
-            efficiency: Math.round(efficiency),
-            alerts: alertsCount
-          });
-        } else {
-          // No data yet
-          setStats({
-            totalUsage: 0,
-            avgDaily: 0,
-            estimatedCost: 0,
-            efficiency: 0,
-            alerts: 0
+            totalCost: Math.round(totalCost * 100) / 100,
+            nextMonthForecast: Math.round(nextMonthForecast * 100) / 100,
+            potentialSavings: Math.round(potentialSavings * 100) / 100
           });
         }
       } catch (error) {
@@ -70,96 +45,56 @@ export function StatsCards() {
     fetchStats();
   }, [token, user]);
 
+  const statCards = [
+    {
+      title: "Total Usage",
+      value: loading ? "..." : `${stats.totalUsage} kWh`,
+      subtitle: "Jun - Jun 3 kWh/day",
+      icon: Zap,
+      iconColor: "text-blue-500"
+    },
+    {
+      title: "Total Cost",
+      value: loading ? "..." : `₹${stats.totalCost}`,
+      subtitle: "",
+      icon: DollarSign,
+      iconColor: "text-green-500"
+    },
+    {
+      title: "Next Month Forecast",
+      value: loading ? "..." : `₹${stats.nextMonthForecast}`,
+      subtitle: "",
+      icon: TrendingUp,
+      iconColor: "text-orange-500"
+    },
+    {
+      title: "Potential Savings",
+      value: loading ? "..." : `₹${stats.potentialSavings}`,
+      subtitle: "",
+      icon: Lightbulb,
+      iconColor: "text-yellow-500"
+    }
+  ];
+
   return (
-    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-      {/* Total Consumption */}
-      <Card className="animate-fade-in">
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">
-            Total Consumption
-          </CardTitle>
-          <Zap className="h-4 w-4 text-muted-foreground" />
-        </CardHeader>
-        <CardContent>
-          <div className="text-2xl font-bold">
-            {loading ? "..." : `${stats.totalUsage} kWh`}
-          </div>
-          <p className="text-xs text-muted-foreground flex items-center mt-2">
-            <TrendingUp className="h-3 w-3 mr-1 text-success" />
-            This month
-          </p>
-          <Progress value={Math.min((stats.totalUsage / 1000) * 100, 100)} className="mt-3" />
-        </CardContent>
-      </Card>
-
-      {/* Cost Analysis */}
-      <Card className="animate-fade-in" style={{ animationDelay: '0.1s' }}>
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">
-            Energy Cost
-          </CardTitle>
-          <DollarSign className="h-4 w-4 text-muted-foreground" />
-        </CardHeader>
-        <CardContent>
-          <div className="text-2xl font-bold">
-            {loading ? "..." : `$${stats.estimatedCost}`}
-          </div>
-          <p className="text-xs text-muted-foreground flex items-center mt-2">
-            <span>At ${(user?.electricity_rate || 0.12).toFixed(3)}/kWh</span>
-          </p>
-          <div className="flex items-center gap-2 mt-3">
-            <Badge variant="secondary" className="text-xs">
-              {stats.estimatedCost > 0 ? "Calculated" : "No Data"}
-            </Badge>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Efficiency Score */}
-      <Card className="animate-fade-in" style={{ animationDelay: '0.2s' }}>
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">
-            Efficiency Score
-          </CardTitle>
-          <Target className="h-4 w-4 text-muted-foreground" />
-        </CardHeader>
-        <CardContent>
-          <div className="text-2xl font-bold text-accent">
-            {loading ? "..." : `${stats.efficiency}%`}
-          </div>
-          <p className="text-xs text-muted-foreground flex items-center mt-2">
-            <TrendingUp className="h-3 w-3 mr-1 text-accent" />
-            Based on usage patterns
-          </p>
-          <Progress value={stats.efficiency} className="mt-3" />
-        </CardContent>
-      </Card>
-
-      {/* Active Alerts */}
-      <Card className="animate-fade-in" style={{ animationDelay: '0.3s' }}>
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">
-            Active Alerts
-          </CardTitle>
-          <AlertTriangle className="h-4 w-4 text-warning" />
-        </CardHeader>
-        <CardContent>
-          <div className="text-2xl font-bold text-warning">
-            {loading ? "..." : stats.alerts}
-          </div>
-          <p className="text-xs text-muted-foreground mt-2">
-            {stats.alerts === 0 ? "No active alerts" : "Energy notifications"}
-          </p>
-          <div className="flex items-center gap-1 mt-3">
-            {stats.alerts > 0 && (
-              <>
-                <Badge variant="destructive" className="text-xs">Active</Badge>
-                <Badge variant="outline" className="text-xs">Monitor</Badge>
-              </>
-            )}
-          </div>
-        </CardContent>
-      </Card>
+    <div className="grid gap-6 md:grid-cols-4">
+      {statCards.map((card, index) => {
+        const Icon = card.icon;
+        return (
+          <Card key={card.title} className="p-6">
+            <CardContent className="p-0">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-sm text-muted-foreground">{card.title}</span>
+                <Icon className={`h-4 w-4 ${card.iconColor}`} />
+              </div>
+              <div className="text-2xl font-bold mb-1">{card.value}</div>
+              {card.subtitle && (
+                <div className="text-xs text-muted-foreground">{card.subtitle}</div>
+              )}
+            </CardContent>
+          </Card>
+        );
+      })}
     </div>
   )
 }

@@ -2,11 +2,10 @@ import { ThemeProvider } from "@/components/theme-provider"
 import { Header } from "@/components/layout/header"
 import { Sidebar } from "@/components/layout/sidebar"
 import { StatsCards } from "@/components/dashboard/stats-cards"
-import { EnergyChart } from "@/components/dashboard/energy-chart"
-import { AlertsPanel } from "@/components/dashboard/alerts-panel"
-import { Filters } from "@/components/dashboard/filters"
 import { UploadData } from "@/components/dashboard/upload-data"
-import { OptimizationTips } from "@/components/dashboard/optimization-tips"
+import { EnergyPredictions } from "@/components/dashboard/energy-predictions"
+import { EnergyOptimizations } from "@/components/dashboard/energy-optimizations"
+import { EnergyGoals } from "@/components/dashboard/energy-goals"
 import { useAuth } from "@/contexts/AuthContext"
 
 const Index = () => {
@@ -21,32 +20,21 @@ const Index = () => {
             <Sidebar />
           </aside>
           <main className="flex-1 p-6 space-y-6">
-            {/* Page Header */}
-            <div className="space-y-2">
-              <h1 className="text-3xl font-bold tracking-tight">
-                {user?.user_type === 'house' ? 'Home Energy Dashboard' : 'Business Energy Dashboard'}
-              </h1>
-              <p className="text-muted-foreground">
-                {user?.user_type === 'house' 
-                  ? 'Monitor and optimize your home energy consumption'
-                  : 'Monitor and optimize energy consumption across all locations'
-                }
-              </p>
-            </div>
-
-            {/* Stats Cards */}
+            {/* Stats Cards - Top Summary */}
             <StatsCards />
 
-            {/* Main Dashboard Grid */}
-            <div className="grid gap-6 md:grid-cols-7">
-              <div className="col-span-4 space-y-6">
-                <EnergyChart />
+            {/* Main Content Grid */}
+            <div className="grid gap-6 lg:grid-cols-2">
+              {/* Left Column */}
+              <div className="space-y-6">
                 <UploadData />
+                <EnergyOptimizations />
               </div>
-              <div className="col-span-3 space-y-6">
-                {user?.user_type === 'shop' && <Filters />}
-                <AlertsPanel />
-                <OptimizationTips />
+
+              {/* Right Column */}
+              <div className="space-y-6">
+                <EnergyPredictions />
+                <EnergyGoals />
               </div>
             </div>
           </main>

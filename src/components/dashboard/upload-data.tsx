@@ -1,21 +1,18 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 import { Upload, FileText, AlertCircle } from "lucide-react"
-import { useState } from "react"
+import { useState, useRef } from "react"
 import { useAuth } from "@/contexts/AuthContext"
 import { uploadCSV } from "@/api"
 import { toast } from "sonner"
-import { ManualEntry } from "./manual-entry"
 
 export function UploadData() {
   const { user, token } = useAuth();
   const [uploading, setUploading] = useState(false);
-  const [branchName, setBranchName] = useState('');
+  const [dragActive, setDragActive] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
+  const handleFileUpload = async (file: File) => {
     if (!file || !token) return;
 
     if (!file.name.endsWith('.csv')) {
@@ -25,17 +22,10 @@ export function UploadData() {
 
     setUploading(true);
     try {
-      const result = await uploadCSV(
-        file, 
-        token, 
-        user?.user_type === 'shop' ? branchName : null
-      );
+      const result = await uploadCSV(file, token, null);
       
       if (result.success) {
         toast.success('CSV uploaded successfully');
-        setBranchName('');
-        // Reset the input
-        event.target.value = '';
       } else {
         toast.error(result.message || 'Upload failed');
       }
@@ -46,66 +36,98 @@ export function UploadData() {
     }
   };
 
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) handleFileUpload(file);
+  };
+
+  const handleDrag = (event: React.DragEvent) => {
+    event.preventDefault();
+    event.stopPropagation();
+    if (event.type === "dragenter" || event.type === "dragover") {
+      setDragActive(true);
+    } else if (event.type === "dragleave") {
+      setDragActive(false);
+    }
+  };
+
+  const handleDrop = (event: React.DragEvent) => {
+    event.preventDefault();
+    event.stopPropagation();
+    setDragActive(false);
+    
+    const file = event.dataTransfer.files?.[0];
+    if (file) handleFileUpload(file);
+  };
+
+  const openFileSelector = () => {
+    fileInputRef.current?.click();
+  };
+
   return (
-    <div className="space-y-6">
-      <Card className="animate-fade-in">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Upload className="h-5 w-5" />
-            Upload Energy Data
-          </CardTitle>
-          <CardDescription>
-            Upload your energy consumption data via CSV file
-            {user?.user_type === 'shop' && ' for each branch/store'}
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          {user?.user_type === 'shop' && (
-            <div className="space-y-2">
-              <Label htmlFor="branchName">Branch/Store Name</Label>
-              <Input
-                id="branchName"
-                value={branchName}
-                onChange={(e) => setBranchName(e.target.value)}
-                placeholder="Enter branch or store name"
-              />
-            </div>
-          )}
-          
-          <div className="space-y-2">
-            <Label htmlFor="csvFile">CSV File</Label>
-            <Input
-              id="csvFile"
-              type="file"
-              accept=".csv"
-              onChange={handleFileUpload}
-              disabled={uploading || (user?.user_type === 'shop' && !branchName)}
-            />
-          </div>
-          
-          <div className="flex items-start gap-2 p-3 bg-muted/50 rounded-lg">
-            <AlertCircle className="h-4 w-4 text-muted-foreground mt-0.5 flex-shrink-0" />
-            <div className="text-sm text-muted-foreground">
-              <p className="font-medium mb-1">CSV Format Requirements:</p>
-              <ul className="space-y-1 text-xs">
-                <li>• Columns: date, kwh_consumed</li>
-                <li>• Date format: YYYY-MM-DD</li>
-                <li>• Energy values in kWh (decimal allowed)</li>
-              </ul>
-            </div>
-          </div>
-          
+    <Card className="animate-fade-in">
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2 text-lg">
+          CSV Upload
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <p className="text-sm text-muted-foreground">
+          Upload energy data from a CSV file
+        </p>
+
+        {/* Drag and Drop Area */}
+        <div
+          className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors ${
+            dragActive 
+              ? 'border-primary bg-primary/5' 
+              : 'border-muted-foreground/25 hover:border-muted-foreground/50'
+          }`}
+          onDragEnter={handleDrag}
+          onDragLeave={handleDrag}
+          onDragOver={handleDrag}
+          onDrop={handleDrop}
+        >
+          <Upload className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
+          <p className="text-sm text-muted-foreground mb-2">
+            Select a file from your device
+          </p>
           <Button 
-            className="w-full" 
-            disabled={uploading || (user?.user_type === 'shop' && !branchName)}
+            variant="outline" 
+            onClick={openFileSelector}
+            disabled={uploading}
+            className="mb-4"
           >
             <FileText className="mr-2 h-4 w-4" />
-            {uploading ? 'Uploading...' : 'Select CSV File to Upload'}
+            Choose File
           </Button>
-        </CardContent>
-      </Card>
+          
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept=".csv"
+            onChange={handleFileChange}
+            className="hidden"
+          />
+        </div>
 
-      <ManualEntry />
-    </div>
+        {/* CSV Format Info */}
+        <div className="flex items-start gap-2 p-3 bg-muted/50 rounded-lg">
+          <AlertCircle className="h-4 w-4 text-muted-foreground mt-0.5 flex-shrink-0" />
+          <div className="text-sm text-muted-foreground">
+            <p className="font-medium mb-1">CSV Format: Usage must experience</p>
+            <p className="text-xs">Headers: date, kwh_consumed</p>
+          </div>
+        </div>
+
+        {/* Upload Button */}
+        <Button 
+          className="w-full bg-gray-600 hover:bg-gray-700 text-white" 
+          disabled={uploading}
+        >
+          {uploading ? 'Uploading...' : 'Upload CSV'}
+        </Button>
+      </CardContent>
+    </Card>
   )
 }
