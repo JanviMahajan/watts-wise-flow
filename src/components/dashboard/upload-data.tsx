@@ -3,14 +3,37 @@ import { Button } from "@/components/ui/button"
 import { Upload, FileText, AlertCircle } from "lucide-react"
 import { useState, useRef } from "react"
 import { useAuth } from "@/contexts/AuthContext"
+import { useEnergyData } from "@/contexts/EnergyDataContext"
 import { uploadCSV } from "@/api"
 import { toast } from "sonner"
 
 export function UploadData() {
   const { user, token } = useAuth();
+  const { updateData } = useEnergyData();
   const [uploading, setUploading] = useState(false);
   const [dragActive, setDragActive] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const parseCSVData = (csvText: string) => {
+    const lines = csvText.split('\n').filter(line => line.trim());
+    const headers = lines[0].toLowerCase().split(',').map(h => h.trim());
+    
+    const data = lines.slice(1).map(line => {
+      const values = line.split(',').map(v => v.trim());
+      const row: any = {};
+      
+      headers.forEach((header, index) => {
+        if (header.includes('date')) row.date = values[index];
+        else if (header.includes('usage') || header.includes('kwh')) row.usage = parseFloat(values[index]) || 0;
+        else if (header.includes('cost') || header.includes('price')) row.cost = parseFloat(values[index]) || 0;
+        else if (header.includes('appliance') || header.includes('device')) row.appliance = values[index];
+      });
+      
+      return row;
+    }).filter(row => row.date && (row.usage || row.cost));
+    
+    return data;
+  };
 
   const handleFileUpload = async (file: File) => {
     if (!file || !token) return;
@@ -22,12 +45,21 @@ export function UploadData() {
 
     setUploading(true);
     try {
+      // Read file content
+      const fileContent = await file.text();
+      const parsedData = parseCSVData(fileContent);
+      
+      // Try backend upload first
       const result = await uploadCSV(file, token, null);
       
-      if (result.success) {
-        toast.success('CSV uploaded successfully');
+      if (result && (result.success !== false)) {
+        // Update local data context
+        updateData(parsedData);
+        toast.success(`CSV uploaded successfully! ${parsedData.length} records processed.`);
       } else {
-        toast.error(result.message || 'Upload failed');
+        // Fallback to local storage
+        updateData(parsedData);
+        toast.success(`CSV processed locally! ${parsedData.length} records added.`);
       }
     } catch (error) {
       toast.error('Upload failed');

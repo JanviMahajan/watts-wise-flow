@@ -1,99 +1,96 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { TrendingUp, Clock, Thermometer } from "lucide-react"
-import { useEffect, useState } from "react"
-import { useAuth } from "@/contexts/AuthContext"
+import { TrendingUp, Zap, Clock, Thermometer } from "lucide-react"
+import { useEnergyData } from "@/contexts/EnergyDataContext"
 
 export function EnergyPredictions() {
-  const { token } = useAuth();
-  const [predictions, setPredictions] = useState({
-    nextMonthUsage: 10935,
-    predictedCost: 1826.62,
-    confidence: 96,
-    peakUsageTime: "6-9 PM",
-    efficiencyTrend: "15% more efficient last month",
-    seasonalImpact: "Summer months typically increase usage by 25%"
-  });
-  const [loading, setLoading] = useState(false);
+  const { predictions, isLoading } = useEnergyData();
+
+  if (isLoading) {
+    return (
+      <div className="grid gap-6 md:grid-cols-2">
+        <Card className="animate-pulse">
+          <CardContent className="p-6">
+            <div className="h-20 bg-muted rounded"></div>
+          </CardContent>
+        </Card>
+        <Card className="animate-pulse">
+          <CardContent className="p-6">
+            <div className="h-20 bg-muted rounded"></div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="grid gap-6 md:grid-cols-2">
-      {/* Next Month Prediction */}
-      <Card>
+      {/* Prediction Card */}
+      <Card className="animate-fade-in">
         <CardHeader>
-          <CardTitle className="text-lg">Next Month Prediction</CardTitle>
-          <p className="text-sm text-muted-foreground">Generate from historical data</p>
+          <CardTitle className="flex items-center gap-2 text-lg">
+            <TrendingUp className="h-5 w-5 text-blue-600" />
+            Energy Predictions
+          </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="space-y-2">
-            <div className="flex justify-between items-center">
-              <span className="text-sm text-muted-foreground">Predicted Usage:</span>
-              <span className="font-semibold">{predictions.nextMonthUsage.toLocaleString()} kWh</span>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-1">
+              <p className="text-sm text-muted-foreground">Predicted Usage</p>
+              <p className="text-xl font-semibold">{predictions?.predictedUsage || 0} kWh</p>
             </div>
-            <div className="flex justify-between items-center">
-              <span className="text-sm text-muted-foreground">Predicted Cost:</span>
-              <span className="font-semibold">₹{predictions.predictedCost}</span>
-            </div>
-            <div className="flex justify-between items-center">
-              <span className="text-sm text-muted-foreground">Confidence:</span>
-              <span className="font-semibold text-success">{predictions.confidence}%</span>
+            <div className="space-y-1">
+              <p className="text-sm text-muted-foreground">Predicted Cost</p>
+              <p className="text-xl font-semibold">₹{predictions?.predictedCost || 0}</p>
             </div>
           </div>
-          
-          <div className="bg-muted/50 p-3 rounded-lg">
-            <p className="text-xs text-muted-foreground">
-              ⚡ Based on your usage patterns over the last 90 days, we predict your next month's energy consumption.
-            </p>
+          <div className="pt-2 border-t">
+            <div className="flex items-center justify-between">
+              <p className="text-sm text-muted-foreground">Confidence Level</p>
+              <p className="text-sm font-medium text-green-600">{predictions?.confidence || 0}%</p>
+            </div>
           </div>
-        </CardContent>
-      </Card>
-
-      {/* Generate New Prediction Button */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-lg">Generate New Prediction</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <button className="w-full py-3 px-4 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors">
-            Generate New Prediction
-          </button>
         </CardContent>
       </Card>
 
       {/* Usage Trends */}
-      <Card className="md:col-span-2">
+      <Card className="animate-fade-in">
         <CardHeader>
-          <CardTitle className="text-lg">Usage Trends</CardTitle>
-          <p className="text-sm text-muted-foreground">Historical patterns and insights</p>
+          <CardTitle className="flex items-center gap-2 text-lg">
+            <Zap className="h-5 w-5 text-purple-600" />
+            Usage Trends
+          </CardTitle>
         </CardHeader>
-        <CardContent>
-          <div className="grid gap-4 md:grid-cols-3">
-            <div className="bg-blue-50 p-4 rounded-lg">
-              <div className="flex items-center gap-2 mb-2">
-                <Clock className="h-4 w-4 text-blue-500" />
-                <span className="font-medium text-blue-700">Peak Usage Times</span>
+        <CardContent className="space-y-4">
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Clock className="h-4 w-4 text-muted-foreground" />
+                <span className="text-sm text-muted-foreground">Peak Usage Time</span>
               </div>
-              <p className="text-sm text-blue-600">{predictions.peakUsageTime}</p>
-              <p className="text-xs text-blue-500 mt-1">Evening hours show highest consumption</p>
+              <span className="text-sm font-medium">{predictions?.peakTime || "6-8 PM"}</span>
             </div>
-
-            <div className="bg-green-50 p-4 rounded-lg">
-              <div className="flex items-center gap-2 mb-2">
-                <TrendingUp className="h-4 w-4 text-green-500" />
-                <span className="font-medium text-green-700">Efficiency Trend</span>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <TrendingUp className="h-4 w-4 text-muted-foreground" />
+                <span className="text-sm text-muted-foreground">Efficiency Trend</span>
               </div>
-              <p className="text-sm text-green-600">{predictions.efficiencyTrend}</p>
+              <span className={`text-sm font-medium capitalize ${
+                predictions?.trend === 'increasing' ? 'text-red-600' : 
+                predictions?.trend === 'decreasing' ? 'text-green-600' : 'text-blue-600'
+              }`}>
+                {predictions?.trend || 'stable'}
+              </span>
             </div>
-
-            <div className="bg-orange-50 p-4 rounded-lg">
-              <div className="flex items-center gap-2 mb-2">
-                <Thermometer className="h-4 w-4 text-orange-500" />
-                <span className="font-medium text-orange-700">Seasonal Impact</span>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Thermometer className="h-4 w-4 text-muted-foreground" />
+                <span className="text-sm text-muted-foreground">Seasonal Impact</span>
               </div>
-              <p className="text-sm text-orange-600">{predictions.seasonalImpact}</p>
+              <span className="text-sm font-medium capitalize">{predictions?.seasonalImpact || 'moderate'}</span>
             </div>
           </div>
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }

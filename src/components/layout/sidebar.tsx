@@ -6,34 +6,41 @@ import {
   Settings2,
   Target
 } from "lucide-react"
+import { NavLink, useLocation } from "react-router-dom"
 
 interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 const navigationItems = [
-  { label: "Dashboard", active: true },
-  { label: "Add Usage", active: false },
-  { label: "Upload CSV", active: false },
-  { label: "Predictions", active: false },
-  { label: "Optimizations", active: false },
-  { label: "Goals", active: false },
+  { label: "Dashboard", path: "/", icon: BarChart3 },
+  { label: "Add Usage", path: "/energy-usage", icon: Plus },
+  { label: "Upload CSV", path: "/import-data", icon: Upload },
+  { label: "Predictions", path: "/analytics", icon: TrendingUp },
+  { label: "Optimizations", path: "/data-management", icon: Settings2 },
+  { label: "Goals", path: "/alerts", icon: Target },
 ];
 
 export function Sidebar({ className }: SidebarProps) {
+  const location = useLocation();
+
   return (
     <div className="px-4 py-6">
       {/* Navigation Tabs */}
       <nav className="space-y-2">
-        {navigationItems.map((item, index) => (
-          <button
+        {navigationItems.map((item) => (
+          <NavLink
             key={item.label}
-            className={`w-full px-4 py-2 text-left rounded-lg transition-colors ${
-              item.active 
-                ? 'bg-primary text-primary-foreground' 
-                : 'text-muted-foreground hover:text-foreground hover:bg-muted'
-            }`}
+            to={item.path}
+            className={({ isActive }) =>
+              `w-full px-4 py-2 text-left rounded-lg transition-colors flex items-center gap-3 ${
+                isActive 
+                  ? 'bg-primary text-primary-foreground' 
+                  : 'text-muted-foreground hover:text-foreground hover:bg-muted'
+              }`
+            }
           >
+            <item.icon className="h-4 w-4" />
             {item.label}
-          </button>
+          </NavLink>
         ))}
       </nav>
     </div>

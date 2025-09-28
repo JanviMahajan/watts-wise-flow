@@ -1,100 +1,69 @@
 import { Card, CardContent } from "@/components/ui/card"
-import { Zap, DollarSign, TrendingUp, Lightbulb } from "lucide-react"
-import { useEffect, useState } from "react"
-import { useAuth } from "@/contexts/AuthContext"
-import { getEnergyData } from "@/api"
+import { TrendingUp, DollarSign, Calendar, Target } from "lucide-react"
+import { useEnergyData } from "@/contexts/EnergyDataContext"
 
 export function StatsCards() {
-  const { token, user } = useAuth();
-  const [stats, setStats] = useState({
-    totalUsage: 7290,
-    totalCost: 1219.08,
-    nextMonthForecast: 1826.62,
-    potentialSavings: 248
-  });
-  const [loading, setLoading] = useState(true);
+  const { totalUsage, totalCost, predictions, isLoading } = useEnergyData();
 
-  useEffect(() => {
-    const fetchStats = async () => {
-      if (!token) return;
-      
-      try {
-        // Fetch energy data
-        const response = await getEnergyData(token);
-        if (response.data && response.data.length > 0) {
-          const data = response.data;
-          const totalUsage = data.reduce((sum, entry) => sum + entry.kwh_consumed, 0);
-          const totalCost = totalUsage * (user?.electricity_rate || 0.167); // ₹0.167 per kWh
-          const nextMonthForecast = totalCost * 1.5; // 50% increase forecast
-          const potentialSavings = totalCost * 0.2; // 20% potential savings
-          
-          setStats({
-            totalUsage: Math.round(totalUsage),
-            totalCost: Math.round(totalCost * 100) / 100,
-            nextMonthForecast: Math.round(nextMonthForecast * 100) / 100,
-            potentialSavings: Math.round(potentialSavings * 100) / 100
-          });
-        }
-      } catch (error) {
-        console.error('Error fetching energy stats:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchStats();
-  }, [token, user]);
-
-  const statCards = [
+  const stats = [
     {
       title: "Total Usage",
-      value: loading ? "..." : `${stats.totalUsage} kWh`,
-      subtitle: "Jun - Jun 3 kWh/day",
-      icon: Zap,
-      iconColor: "text-blue-500"
+      value: isLoading ? "Loading..." : `${totalUsage.toFixed(1)} kWh`,
+      icon: TrendingUp,
+      color: "text-blue-600",
+      bgColor: "bg-blue-50",
     },
     {
       title: "Total Cost",
-      value: loading ? "..." : `₹${stats.totalCost}`,
-      subtitle: "",
+      value: isLoading ? "Loading..." : `₹${totalCost.toFixed(0)}`,
       icon: DollarSign,
-      iconColor: "text-green-500"
+      color: "text-green-600", 
+      bgColor: "bg-green-50",
     },
     {
       title: "Next Month Forecast",
-      value: loading ? "..." : `₹${stats.nextMonthForecast}`,
-      subtitle: "",
-      icon: TrendingUp,
-      iconColor: "text-orange-500"
+      value: isLoading ? "Loading..." : `${predictions?.predictedUsage || 0} kWh`,
+      subtitle: `${predictions?.confidence || 0}% confidence`,
+      icon: Calendar,
+      color: "text-purple-600",
+      bgColor: "bg-purple-50",
     },
     {
       title: "Potential Savings",
-      value: loading ? "..." : `₹${stats.potentialSavings}`,
-      subtitle: "",
-      icon: Lightbulb,
-      iconColor: "text-yellow-500"
-    }
+      value: isLoading ? "Loading..." : `₹${Math.round((predictions?.predictedCost || 0) * 0.15)}`,
+      subtitle: "With optimizations",
+      icon: Target,
+      color: "text-orange-600",
+      bgColor: "bg-orange-50",
+    },
   ];
 
   return (
-    <div className="grid gap-6 md:grid-cols-4">
-      {statCards.map((card, index) => {
-        const Icon = card.icon;
-        return (
-          <Card key={card.title} className="p-6">
-            <CardContent className="p-0">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-sm text-muted-foreground">{card.title}</span>
-                <Icon className={`h-4 w-4 ${card.iconColor}`} />
+    <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+      {stats.map((stat, index) => (
+        <Card key={index} className="animate-fade-in">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div className="space-y-2">
+                <p className="text-sm font-medium text-muted-foreground">
+                  {stat.title}
+                </p>
+                <p className="text-2xl font-bold text-foreground">
+                  {stat.value}
+                </p>
+                {stat.subtitle && (
+                  <p className="text-xs text-muted-foreground">
+                    {stat.subtitle}
+                  </p>
+                )}
               </div>
-              <div className="text-2xl font-bold mb-1">{card.value}</div>
-              {card.subtitle && (
-                <div className="text-xs text-muted-foreground">{card.subtitle}</div>
-              )}
-            </CardContent>
-          </Card>
-        );
-      })}
+              <div className={`p-3 rounded-full ${stat.bgColor}`}>
+                <stat.icon className={`h-6 w-6 ${stat.color}`} />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      ))}
     </div>
-  )
+  );
 }
