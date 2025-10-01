@@ -1,25 +1,30 @@
-import { Github, Linkedin } from "lucide-react"
+import { Github, Linkedin, Leaf } from "lucide-react"
 
 export function Footer() {
   return (
-    <footer className="border-t bg-card/50 mt-auto">
-      <div className="container mx-auto px-6 py-6">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+    <footer className="bg-gradient-to-r from-emerald-600 to-teal-600 text-white mt-auto">
+      <div className="container mx-auto px-6 py-10">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+          {/* Brand Section */}
           <div className="text-center md:text-left">
-            <h3 className="font-bold text-lg">GreenOps</h3>
-            <p className="text-sm text-muted-foreground">Sustainable Energy Management Solutions</p>
+            <div className="flex items-center gap-2 justify-center md:justify-start mb-3">
+              <Leaf className="h-7 w-7" />
+              <h3 className="font-bold text-2xl">GreenOps</h3>
+            </div>
+            <p className="text-emerald-50 text-sm leading-relaxed max-w-xs mx-auto md:mx-0">
+              Sustainable Energy Management Solutions. Monitor, optimize, and reduce your energy consumption for a greener future.
+            </p>
           </div>
           
-          <div className="flex items-center gap-4">
-            <span className="text-sm text-muted-foreground">
-              Created by <span className="font-medium text-foreground">Janvi Mahajan</span>
-            </span>
-            <div className="flex gap-3">
+          {/* Contact Section */}
+          <div className="text-center">
+            <h4 className="font-semibold text-lg mb-4">Contact Us</h4>
+            <div className="flex gap-4 justify-center">
               <a 
                 href="https://www.linkedin.com/in/janvi-mahajan-0000j08" 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="text-muted-foreground hover:text-primary transition-colors"
+                className="bg-white/20 hover:bg-white/30 backdrop-blur-sm p-3 rounded-full transition-all transform hover:scale-110"
                 aria-label="LinkedIn"
               >
                 <Linkedin className="h-5 w-5" />
@@ -28,12 +33,42 @@ export function Footer() {
                 href="https://github.com/JanviMahajan" 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="text-muted-foreground hover:text-primary transition-colors"
+                className="bg-white/20 hover:bg-white/30 backdrop-blur-sm p-3 rounded-full transition-all transform hover:scale-110"
                 aria-label="GitHub"
               >
                 <Github className="h-5 w-5" />
               </a>
             </div>
+          </div>
+
+          {/* Quick Links Section */}
+          <div className="text-center md:text-right">
+            <h4 className="font-semibold text-lg mb-4">Useful Links</h4>
+            <ul className="space-y-2 text-emerald-50 text-sm">
+              <li>
+                <a href="/" className="hover:text-white transition-colors">Dashboard</a>
+              </li>
+              <li>
+                <a href="/analytics" className="hover:text-white transition-colors">Predictions</a>
+              </li>
+              <li>
+                <a href="/data-management" className="hover:text-white transition-colors">Optimizations</a>
+              </li>
+              <li>
+                <a href="/alerts" className="hover:text-white transition-colors">Goals</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        {/* Bottom Bar */}
+        <div className="border-t border-white/20 pt-6">
+          <div className="text-center text-emerald-50 text-sm">
+            <p className="mb-2">© 2025 GreenOps. All rights reserved.</p>
+            <p>
+              Developed and contributed by{" "}
+              <span className="font-semibold text-white">Janvi Mahajan</span>
+            </p>
           </div>
         </div>
       </div>
