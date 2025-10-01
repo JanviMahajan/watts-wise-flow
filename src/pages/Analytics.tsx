@@ -1,14 +1,15 @@
 import { ThemeProvider } from "@/components/theme-provider"
 import { Header } from "@/components/layout/header"
 import { Sidebar } from "@/components/layout/sidebar"
+import { Footer } from "@/components/layout/footer"
 import { EnergyPredictions } from "@/components/dashboard/energy-predictions"
 
 const Analytics = () => {
   return (
     <ThemeProvider defaultTheme="light" storageKey="greenops-ui-theme">
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen bg-background flex flex-col">
         <Header />
-        <div className="flex">
+        <div className="flex flex-1">
           <aside className="w-64 border-r bg-card/50">
             <Sidebar />
           </aside>
@@ -25,6 +26,7 @@ const Analytics = () => {
             </div>
           </main>
         </div>
+        <Footer />
       </div>
     </ThemeProvider>
   );
