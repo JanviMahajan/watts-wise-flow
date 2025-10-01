@@ -1,6 +1,7 @@
 import { ThemeProvider } from "@/components/theme-provider"
 import { Header } from "@/components/layout/header"
 import { Sidebar } from "@/components/layout/sidebar"
+import { EnergyPredictions } from "@/components/dashboard/energy-predictions"
 
 const Analytics = () => {
   return (
@@ -13,21 +14,14 @@ const Analytics = () => {
           </aside>
           <main className="flex-1 p-6 space-y-6">
             <div className="space-y-2">
-              <h1 className="text-3xl font-bold tracking-tight">Analytics</h1>
+              <h1 className="text-3xl font-bold tracking-tight">Predictions</h1>
               <p className="text-muted-foreground">
-                Advanced analytics and insights for energy consumption patterns
+                Energy consumption forecasts and trend analysis
               </p>
             </div>
             
-            <div className="grid gap-6 md:grid-cols-2">
-              <div className="col-span-1 p-8 border border-dashed border-border rounded-lg text-center">
-                <h3 className="text-lg font-semibold mb-2">Energy Trends</h3>
-                <p className="text-muted-foreground">Detailed trend analysis coming soon</p>
-              </div>
-              <div className="col-span-1 p-8 border border-dashed border-border rounded-lg text-center">
-                <h3 className="text-lg font-semibold mb-2">Performance Metrics</h3>
-                <p className="text-muted-foreground">Performance insights coming soon</p>
-              </div>
+            <div className="max-w-4xl">
+              <EnergyPredictions />
             </div>
           </main>
         </div>

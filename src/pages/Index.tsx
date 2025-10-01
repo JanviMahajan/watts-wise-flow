@@ -5,7 +5,7 @@ import { StatsCards } from "@/components/dashboard/stats-cards"
 import { UploadData } from "@/components/dashboard/upload-data"
 import { EnergyPredictions } from "@/components/dashboard/energy-predictions"
 import { EnergyOptimizations } from "@/components/dashboard/energy-optimizations"
-import { EnergyGoals } from "@/components/dashboard/energy-goals"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { useAuth } from "@/contexts/AuthContext"
 
 const Index = () => {
@@ -24,17 +24,59 @@ const Index = () => {
             <StatsCards />
 
             {/* Main Content Grid */}
-            <div className="grid gap-6 lg:grid-cols-2">
+            <div className="grid gap-6 lg:grid-cols-3">
               {/* Left Column */}
-              <div className="space-y-6">
+              <div className="space-y-6 lg:col-span-2">
                 <UploadData />
                 <EnergyOptimizations />
               </div>
 
-              {/* Right Column */}
+              {/* Right Column - Usage Breakdown */}
               <div className="space-y-6">
-                <EnergyPredictions />
-                <EnergyGoals />
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Usage Breakdown</CardTitle>
+                    <CardDescription>Energy consumption by category</CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="space-y-2">
+                      <div className="flex justify-between">
+                        <span className="text-sm">Lighting</span>
+                        <span className="text-sm font-medium">35%</span>
+                      </div>
+                      <div className="w-full bg-secondary rounded-full h-2">
+                        <div className="bg-primary h-2 rounded-full" style={{ width: '35%' }}></div>
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <div className="flex justify-between">
+                        <span className="text-sm">HVAC</span>
+                        <span className="text-sm font-medium">28%</span>
+                      </div>
+                      <div className="w-full bg-secondary rounded-full h-2">
+                        <div className="bg-primary h-2 rounded-full" style={{ width: '28%' }}></div>
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <div className="flex justify-between">
+                        <span className="text-sm">Equipment</span>
+                        <span className="text-sm font-medium">25%</span>
+                      </div>
+                      <div className="w-full bg-secondary rounded-full h-2">
+                        <div className="bg-primary h-2 rounded-full" style={{ width: '25%' }}></div>
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <div className="flex justify-between">
+                        <span className="text-sm">Other</span>
+                        <span className="text-sm font-medium">12%</span>
+                      </div>
+                      <div className="w-full bg-secondary rounded-full h-2">
+                        <div className="bg-primary h-2 rounded-full" style={{ width: '12%' }}></div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
               </div>
             </div>
           </main>
