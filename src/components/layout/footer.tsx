@@ -2,7 +2,7 @@ import { Github, Linkedin, Leaf } from "lucide-react"
 
 export function Footer() {
   return (
-    <footer className="bg-gradient-primary text-primary-foreground mt-auto">
+    <footer className="relative bg-gradient-primary/95 text-primary-foreground mt-auto backdrop-blur-sm">
       <div className="container mx-auto px-6 py-10">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
           {/* Brand Section */}
@@ -66,7 +66,7 @@ export function Footer() {
           <div className="text-center text-primary-foreground/80 text-sm">
             <p className="mb-2">© 2025 GreenOps. All rights reserved.</p>
             <p>
-              Developed and contributed by{" "}
+              Created by{" "}
               <span className="font-semibold text-primary-foreground">Janvi Mahajan</span>
             </p>
           </div>
