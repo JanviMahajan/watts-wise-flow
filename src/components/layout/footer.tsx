@@ -2,7 +2,7 @@ import { Github, Linkedin, Leaf } from "lucide-react"
 
 export function Footer() {
   return (
-    <footer className="bg-gradient-to-r from-emerald-600 to-teal-600 text-white mt-auto">
+    <footer className="bg-gradient-primary text-primary-foreground mt-auto">
       <div className="container mx-auto px-6 py-10">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
           {/* Brand Section */}
@@ -11,7 +11,7 @@ export function Footer() {
               <Leaf className="h-7 w-7" />
               <h3 className="font-bold text-2xl">GreenOps</h3>
             </div>
-            <p className="text-emerald-50 text-sm leading-relaxed max-w-xs mx-auto md:mx-0">
+            <p className="text-primary-foreground/80 text-sm leading-relaxed max-w-xs mx-auto md:mx-0">
               Sustainable Energy Management Solutions. Monitor, optimize, and reduce your energy consumption for a greener future.
             </p>
           </div>
@@ -44,30 +44,30 @@ export function Footer() {
           {/* Quick Links Section */}
           <div className="text-center md:text-right">
             <h4 className="font-semibold text-lg mb-4">Useful Links</h4>
-            <ul className="space-y-2 text-emerald-50 text-sm">
+            <ul className="space-y-2 text-primary-foreground/80 text-sm">
               <li>
-                <a href="/" className="hover:text-white transition-colors">Dashboard</a>
+                <a href="/" className="hover:text-primary-foreground transition-colors">Dashboard</a>
               </li>
               <li>
-                <a href="/analytics" className="hover:text-white transition-colors">Predictions</a>
+                <a href="/analytics" className="hover:text-primary-foreground transition-colors">Predictions</a>
               </li>
               <li>
-                <a href="/data-management" className="hover:text-white transition-colors">Optimizations</a>
+                <a href="/data-management" className="hover:text-primary-foreground transition-colors">Optimizations</a>
               </li>
               <li>
-                <a href="/alerts" className="hover:text-white transition-colors">Goals</a>
+                <a href="/alerts" className="hover:text-primary-foreground transition-colors">Goals</a>
               </li>
             </ul>
           </div>
         </div>
 
         {/* Bottom Bar */}
-        <div className="border-t border-white/20 pt-6">
-          <div className="text-center text-emerald-50 text-sm">
+        <div className="border-t border-primary-foreground/20 pt-6">
+          <div className="text-center text-primary-foreground/80 text-sm">
             <p className="mb-2">© 2025 GreenOps. All rights reserved.</p>
             <p>
               Developed and contributed by{" "}
-              <span className="font-semibold text-white">Janvi Mahajan</span>
+              <span className="font-semibold text-primary-foreground">Janvi Mahajan</span>
             </p>
           </div>
         </div>
