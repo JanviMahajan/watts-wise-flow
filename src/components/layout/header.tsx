@@ -36,7 +36,7 @@ export function Header() {
           <img 
             src={theme === 'dark' ? logoSimple : logo} 
             alt="GreenOps Energy" 
-            className="h-14 w-auto"
+            className="h-14 w-auto mix-blend-multiply dark:mix-blend-screen"
           />
           <div className="text-sm text-muted-foreground">
             {user?.user_type === 'house' ? 'Home Energy' : 'Business Energy'}

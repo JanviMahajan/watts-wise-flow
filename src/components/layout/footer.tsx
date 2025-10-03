@@ -16,7 +16,7 @@ export function Footer() {
               <img 
                 src={theme === 'dark' ? logoSimple : logo} 
                 alt="GreenOps Energy" 
-                className="h-12 w-auto"
+                className="h-12 w-auto mix-blend-multiply dark:mix-blend-screen"
               />
             </div>
             <p className="text-primary-foreground/80 text-sm leading-relaxed max-w-xs mx-auto md:mx-0">
