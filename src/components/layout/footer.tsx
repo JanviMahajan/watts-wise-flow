@@ -1,15 +1,23 @@
-import { Github, Linkedin, Leaf } from "lucide-react"
+import { Github, Linkedin } from "lucide-react"
+import logo from "@/assets/greenops-logo.png";
+import logoSimple from "@/assets/greenops-logo-simple.png";
+import { useTheme } from "next-themes";
 
 export function Footer() {
+  const { theme } = useTheme();
+  
   return (
     <footer className="bg-gradient-primary text-primary-foreground mt-auto border-t border-primary-foreground/10">
       <div className="container mx-auto px-6 py-10">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
           {/* Brand Section */}
           <div className="text-center md:text-left">
-            <div className="flex items-center gap-2 justify-center md:justify-start mb-3">
-              <Leaf className="h-7 w-7" />
-              <h3 className="font-bold text-2xl">GreenOps</h3>
+            <div className="flex items-center justify-center md:justify-start mb-3">
+              <img 
+                src={theme === 'dark' ? logoSimple : logo} 
+                alt="GreenOps Energy" 
+                className="h-12 w-auto"
+              />
             </div>
             <p className="text-primary-foreground/80 text-sm leading-relaxed max-w-xs mx-auto md:mx-0">
               Sustainable Energy Management Solutions. Monitor, optimize, and reduce your energy consumption for a greener future.

@@ -13,10 +13,13 @@ import { User, Settings, LogOut } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import logo from "@/assets/greenops-logo.png";
+import logoSimple from "@/assets/greenops-logo-simple.png";
+import { useTheme } from "next-themes";
 
 export function Header() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const { theme } = useTheme();
 
   const handleLogout = () => {
     logout();
@@ -31,9 +34,9 @@ export function Header() {
       <div className="flex h-16 items-center px-6">
         <div className="flex items-center space-x-4">
           <img 
-            src={logo} 
+            src={theme === 'dark' ? logoSimple : logo} 
             alt="GreenOps Energy" 
-            className="h-10 w-auto dark:brightness-0 dark:invert"
+            className="h-14 w-auto"
           />
           <div className="text-sm text-muted-foreground">
             {user?.user_type === 'house' ? 'Home Energy' : 'Business Energy'}
