@@ -14,9 +14,9 @@ export function Footer() {
           <div className="text-center md:text-left">
             <div className="flex items-center justify-center md:justify-start mb-3">
               <img 
-                src={theme === 'dark' ? logoSimple : logo} 
+                src={logo} 
                 alt="GreenOps Energy" 
-                className="h-12 w-auto mix-blend-multiply dark:mix-blend-screen"
+                className="h-14 w-auto dark:brightness-[1.2] dark:contrast-[1.1]"
               />
             </div>
             <p className="text-primary-foreground/80 text-sm leading-relaxed max-w-xs mx-auto md:mx-0">

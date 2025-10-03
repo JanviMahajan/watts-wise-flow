@@ -34,9 +34,9 @@ export function Header() {
       <div className="flex h-16 items-center px-6">
         <div className="flex items-center space-x-4">
           <img 
-            src={theme === 'dark' ? logoSimple : logo} 
+            src={logo} 
             alt="GreenOps Energy" 
-            className="h-14 w-auto mix-blend-multiply dark:mix-blend-screen"
+            className="h-16 w-auto dark:brightness-[1.2] dark:contrast-[1.1]"
           />
           <div className="text-sm text-muted-foreground">
             {user?.user_type === 'house' ? 'Home Energy' : 'Business Energy'}
