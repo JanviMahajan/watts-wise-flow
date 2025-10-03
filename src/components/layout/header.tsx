@@ -12,8 +12,8 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { User, Settings, LogOut } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
-import logo from "@/assets/greenops-logo.png";
-import logoSimple from "@/assets/greenops-logo-simple.png";
+import logoLight from "@/assets/greenops-logo-light.png";
+import logoDark from "@/assets/greenops-logo-dark.png";
 import { useTheme } from "next-themes";
 
 export function Header() {
@@ -34,9 +34,9 @@ export function Header() {
       <div className="flex h-16 items-center px-6">
         <div className="flex items-center space-x-4">
           <img 
-            src={logo} 
+            src={theme === 'dark' ? logoDark : logoLight} 
             alt="GreenOps Energy" 
-            className="h-16 w-auto dark:brightness-[1.2] dark:contrast-[1.1]"
+            className="h-16 w-auto"
           />
           <div className="text-sm text-muted-foreground">
             {user?.user_type === 'house' ? 'Home Energy' : 'Business Energy'}

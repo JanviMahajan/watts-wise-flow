@@ -1,6 +1,6 @@
 import { Github, Linkedin } from "lucide-react"
-import logo from "@/assets/greenops-logo.png";
-import logoSimple from "@/assets/greenops-logo-simple.png";
+import logoLight from "@/assets/greenops-logo-light.png";
+import logoDark from "@/assets/greenops-logo-dark.png";
 import { useTheme } from "next-themes";
 
 export function Footer() {
@@ -14,9 +14,9 @@ export function Footer() {
           <div className="text-center md:text-left">
             <div className="flex items-center justify-center md:justify-start mb-3">
               <img 
-                src={logo} 
+                src={theme === 'dark' ? logoDark : logoLight} 
                 alt="GreenOps Energy" 
-                className="h-14 w-auto dark:brightness-[1.2] dark:contrast-[1.1]"
+                className="h-14 w-auto"
               />
             </div>
             <p className="text-primary-foreground/80 text-sm leading-relaxed max-w-xs mx-auto md:mx-0">
