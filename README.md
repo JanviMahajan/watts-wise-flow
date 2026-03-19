@@ -125,11 +125,8 @@ For licensing inquiries, please contact: [your-email@greenops.com]
 
 ## 🛠️ Deployment
 
-To deploy this application:
+website link- https://greenopssss.lovable.app
 
-1. Visit [Lovable](https://lovable.dev/projects/8ed1250a-f6b3-478a-8a6d-3e6c121e9cab)
-2. Click on **Share** → **Publish**
-3. Your application will be deployed and accessible via a public URL
 
 ### Custom Domain
 
